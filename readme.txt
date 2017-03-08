@@ -1,1 +1,1 @@
-规贝开放平台
+guibei open
