@@ -10,7 +10,7 @@
 					<div @click="logout" class="login-out">退出</div>
 					<el-row class="login-line">|</el-row>
 					<el-dropdown trigger="hover">
-						<span class="el-dropdown-link">{{sysUserName}}<i class="el-icon-caret-bottom el-icon--right"></i></span>
+						<span class="el-dropdown-link">{{sysUserName}}（ID：{{sysUserId}}）<i class="el-icon-caret-bottom el-icon--right"></i></span>
 						<el-dropdown-menu slot="dropdown">
 							<el-dropdown-item @click.native="dialogFormVisible=true">修改密码</el-dropdown-item>
 						</el-dropdown-menu>
@@ -55,7 +55,7 @@
 				</section>
 				<!--</el-col>-->
 			</el-col>
-			<el-row class="panel-bottom">Copyright 2017-2020 © 南京规贝软件科技有限公司版权所有 苏ICP备：16030832号 苏网文 [2015]2034-038号</el-row>
+			<el-row class="panel-bottom">Copyright 2017-2020 © 南京规贝软件科技有限公司版权所有 <a href="http://www.miitbeian.gov.cn/publish/query/indexFirst.action" target="_blank">苏ICP备：16030832号</a> <a href="http://sq.ccm.gov.cn/ccnt/sczr/service/business/emark/toDetail/d09fba96d1fe4d61bca66f43efb68e7d" target="_blank">苏网文 [2015]2034-038号</a></el-row>
 			
 			<el-dialog title="修改密码" custom-class="modify-password" v-model="dialogFormVisible">
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" >
@@ -82,24 +82,31 @@
 			</div>
 			<div class="contact-us-bot">
 				<dl class="kf-item">
-					<dt><span>于洋</span><em>（渠道商务）</em></dt>
+					<dt><span>宋达</span><em>（华北地区）</em></dt>
 					<dd>
-						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850917857</span><a href="#" target="_blank" class="blue">立即联系</a></h3>
-						<h4><em><img src="../assets/common/phone-icon.png" /></em>137-7066-0203</h4>
+						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2355617593</span><a href="http://wpa.qq.com/msgrd?v=3&uin=2355617593&site=qq&menu=yes" target="_blank" class="blue">立即联系</a></h3>
+						<h4><em><img src="../assets/common/email-icon.png" /></em>songda@17of.com</h4>
 					</dd>
 				</dl>
 				<dl class="kf-item">
-					<dt><span>孙一洋</span><em>（渠道运营）</em></dt>
+					<dt><span>汪靖</span><em>（华东地区）</em></dt>
 					<dd>
-						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850917857</span><a href="#" target="_blank" class="blue">立即联系</a></h3>
-						<h4><em><img src="../assets/common/phone-icon.png" /></em>137-7066-0203</h4>
+						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850662319</span><a href="http://wpa.qq.com/msgrd?v=3&uin=2850662319&site=qq&menu=yes" target="_blank" class="blue">立即联系</a></h3>
+						<h4><em><img src="../assets/common/email-icon.png" /></em>wangjing01@17of.com</h4>
 					</dd>
 				</dl>
 				<dl class="kf-item">
-					<dt><span>孙二洋</span><em>（渠道商务）</em></dt>
+					<dt><span>沈孟</span><em>（华南地区）</em></dt>
 					<dd>
-						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850917857</span><a href="#" target="_blank" class="blue">立即联系</a></h3>
-						<h4><em><img src="../assets/common/phone-icon.png" /></em>137-7066-0203</h4>
+						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850917857</span><a href="http://wpa.qq.com/msgrd?v=3&uin=2850917857&site=qq&menu=yes" target="_blank" class="blue">立即联系</a></h3>
+						<h4><em><img src="../assets/common/email-icon.png" /></em>shenmeng@17of.com</h4>
+					</dd>
+				</dl>
+				<dl class="kf-item">
+					<dt><span>李丽珊</span><em>（华中地区）</em></dt>
+					<dd>
+						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850917840</span><a href="http://wpa.qq.com/msgrd?v=3&uin=2850917840&site=qq&menu=yes" target="_blank" class="blue">立即联系</a></h3>
+						<h4><em><img src="../assets/common/email-icon.png" /></em>lilishan@17of.com</h4>
 					</dd>
 				</dl>
 			</div>
@@ -134,6 +141,9 @@ export default {
 				        	closeOnClickModal:false,
 				        	showclose:false
 				        }).then(() => {
+				        	_this.oldpwd = "";
+				        	_this.pass = "";
+				        	_this.checkPass = "";
 				        	sessionStorage.removeItem('userinfo');
 							_this.$router.push('/login');
 				        }).catch(() => {
@@ -168,6 +178,7 @@ export default {
 	    };
 		return {
 			sysUserName: '',
+			sysUserId:'',
 	        dialogFormVisible: false,
 	        ruleForm: {
 	        	oldpwd: '',
@@ -179,6 +190,7 @@ export default {
 	        	oldpwd: [
 	            	{ required: true, message: '请输入原密码', trigger: 'blur' },
 	            	{ min: 6, max: 20, message: '请输入6~20位数字与字母组合', trigger: 'blur' },
+	            	{validator: checkOldpwd, trigger: 'submit' }
 	          	],
 	          	pass: [
 		            { required: true, validator: validatePass, trigger: 'blur' },
@@ -252,7 +264,6 @@ export default {
 	        	if (valid) {
 	        		
 	          	}else{
-	            	console.log('error submit!!');
 	            	return false;
 	          	}
 	        });
@@ -274,32 +285,27 @@ export default {
 		userinfo = JSON.parse(userinfo);
 		if (userinfo) {
 			_this.sysUserName = userinfo.channelname || '';
+			_this.sysUserId = userinfo.userid || '';
 		};
 		_this.$http.post('http://192.168.188.148:9527/api/user/checkfirstpassword', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 	      		let { msg, code } = response.data;
 	     		if (code == 0) {
-	     			if(response.data.data.flag ==1){
-	     				if(userinfo.modifypassword == 0){
-		     				_this.$confirm('', '友情提醒', {
-		     					message1:'初次登录',
-		     					message2:'',
-		     					message:'建议您修改初始密码',
-					        	confirmButtonText: '去修改',
-					        	cancelButtonText: '暂不修改',
-					        	closeOnClickModal:false
-					        }).then(() => {
-					        	
-					        	_this.dialogFormVisible = true
-					        	
-					        }).catch(() => {
-         
-					        });
-					        
-					        userinfo.modifypassword = 1;
-					        sessionStorage.setItem('userinfo',JSON.stringify(userinfo));
-				        }
-	     				
+	     			if(response.data.data.flag == 1){
+	     				_this.$confirm('', '友情提醒', {
+	     					message1:'',
+	     					message2:'',
+	     					message:'建议您修改初始密码',
+				        	confirmButtonText: '去修改',
+				        	cancelButtonText: '暂不修改',
+				        	closeOnClickModal:false
+				        }).then(() => {
+				        	
+				        	_this.dialogFormVisible = true
+				        	
+				        }).catch(() => {
+     
+				        });
 				    }
 	     		}
 			},function(response) {

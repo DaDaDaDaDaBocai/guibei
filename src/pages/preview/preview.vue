@@ -23,7 +23,7 @@
 				</div>
 			  	<el-table :data="tableData1" :row-class-name="tableRowClassName" border style="width: 100%" height="281" @sort-change='sortChange'>
 			    	<el-table-column prop="order_id" label="订单号" width="135" align="center"></el-table-column>
-			    	<el-table-column prop="cardno" label="银行卡" width="142" align="center" show-overflow-tooltip></el-table-column>
+			    	<el-table-column prop="cardno" label="帐号(卡号)" width="142" align="center" show-overflow-tooltip></el-table-column>
 			    	<el-table-column prop="amount" label="充值金额" width="123" align="right" :formatter="escape2" class-name="thcenter bold"></el-table-column>
 			    	<el-table-column prop="status" label="进度" width="91" align="center" :formatter="escape" class-name = "status"></el-table-column>
 			    	<el-table-column prop="create_time" label="创建时间" width="123" align="center" sortable="custom" show-overflow-tooltip></el-table-column>

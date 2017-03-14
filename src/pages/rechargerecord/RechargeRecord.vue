@@ -40,7 +40,7 @@
 	    	<div class="table-box">
 	    		<el-table :data="recordTable" :row-class-name="tableRowClassName" border style="width: 100%" @sort-change='sortChange'>
 			    	<el-table-column prop="order_id" label="订单号" min-width="130" align="center"></el-table-column>
-			    	<el-table-column prop="cardno" label="银行卡" min-width="140" align="center" show-overflow-tooltip></el-table-column>
+			    	<el-table-column prop="cardno" label="帐号(卡号)" min-width="140" align="center" show-overflow-tooltip></el-table-column>
 			    	<el-table-column prop="amount" label="充值金额" min-width="110" align="right" :formatter="escape2" class-name="thcenter bold"></el-table-column>
 			    	<el-table-column prop="status" label="进度" min-width="120" align="center" :formatter="escape" class-name = "status"></el-table-column>
 			    	<el-table-column prop="create_time" label="创建时间" min-width="144" align="center" sortable="custom" show-overflow-tooltip></el-table-column>
@@ -73,7 +73,7 @@
 				    	<el-form-item label="户名：" :label-width="formLabelWidth">
 				    		<el-input v-model="recdetForm.owner" auto-complete="off" :disabled="true"></el-input>
 				    	</el-form-item>
-				    	<el-form-item label="账号（卡号）：" :label-width="formLabelWidth">
+				    	<el-form-item label="帐号(卡号)：" :label-width="formLabelWidth">
 				    		<el-input v-model="recdetForm.cardno" auto-complete="off" :disabled="true"></el-input>
 				    	</el-form-item>
 				    	<el-form-item label="开户行：" :label-width="formLabelWidth">
@@ -218,16 +218,15 @@ export default {
 	    onSubmit() {
 	    	var _this = this;
 	    	var _timeline = _this.screenForm.timer;
-	    	try{
+	    	if(!_timeline[0] || _timeline == " "){
+	    		_this.StartTime = '';
+	    		_this.EndTime = '';
+	    	}else{
 	    		_this.StartTime = _timeline[0].Format("yyyy-MM-dd HH:mm:ss");
 	    		_this.EndTime = _timeline[1].Format("yyyy-MM-dd HH:mm:ss");
-	    	}catch(e){
-	    		//TODO handle the exception
-	    	};
-	    	if(_this.screenForm.status == " "){
-	    		_this.screenForm.status ="";
 	    	};
 	    	_this.Status = _this.screenForm.status;
+	    	_this.Status == ' ' ? _this.Status='':_this.Status;
 	    	_this.currentPage = 1;
 	    	_this.changePage();
     	},

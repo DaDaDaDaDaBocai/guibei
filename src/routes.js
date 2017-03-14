@@ -74,6 +74,17 @@ let routes = [
         ]
     },
     {
+        path: '/',
+        component: Home,
+        name: '主导航-充值状态',
+        module_id:'3',
+        iconCls: 'icon el-icon-yecz',
+        leaf: true,//只有一个节点
+        children: [
+            { path: '/RechargeStatus', component: RechargeStatus, name: '充值状态',module_id:'4' }
+        ]
+    },
+    {
         path: '*',
         hidden: true,
         moudule_id:'2',

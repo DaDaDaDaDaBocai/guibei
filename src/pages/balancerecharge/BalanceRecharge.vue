@@ -17,7 +17,7 @@
 					<dl>
 						<dt><img src="../../assets/recharge/def-tx.png" alt="" /></dt>
 						<dd>
-							<h2>您的平台ID号：102369801</h2>
+							<h2>您的平台ID号：{{userids}}</h2>
 							<p>ID号不填写或填写有误将会被退回</p>
 						</dd>
 					</dl>
@@ -31,11 +31,11 @@
 		</div>
 		<div class="recharge-bot">
 			<h2 class="recharge-tit">第二步/填写付款信息：</h2>
-			<el-form :model="rechargeForm" :rules="rules" ref="rechargeForm" label-position="left" label-width="260px" class="recharge-form" >
+			<el-form :model="rechargeForm" :rules="rules" ref="rechargeForm" label-position="left" label-width="260px" class="recharge-form" :file-list="fileList1">
 			  	<el-form-item label="户名：" prop="owner">
 			  		<el-input v-model="rechargeForm.owner" size="large" icon="close1" placeholder="请输入户名" @click="rechargeForm.owner =''" class="case-data"></el-input>
 			  	</el-form-item>
-			  	<el-form-item label="账号（卡号）：" prop="cardno">
+			  	<el-form-item label="账号(卡号)：" prop="cardno">
 			    	<el-input v-model="rechargeForm.cardno" size="large" icon="close1" placeholder="请输入账号（卡号）" @click="rechargeForm.cardno =''" class="case-data"></el-input>
 			  	</el-form-item>
 			  	<el-form-item label="开户行：" prop="bankname">
@@ -48,7 +48,7 @@
 					<em class="c333">元</em>
 			  	</el-form-item>
 			  	<el-form-item label="付款凭证：" prop="pzpic">
-			    	<el-upload class="upload" drag action="http://192.168.188.148:9527/api/uploadimage" :on-success="handleSuccess" :on-error="handleError">
+			    	<el-upload class="upload" ref="uploads" drag action="http://192.168.188.148:9527/api/uploadimage" :on-success="handleSuccess" :on-error="handleError" :before-upload="handleUpload">
 						<i class="el-icon-upload"></i>
 						<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 						<div class="el-upload__tip" slot="tip">
@@ -68,6 +68,13 @@
 import jQuery from 'jquery'
 export default {
 	data() {
+		var validateMax = (rule, value, callback) => {
+	        if (parseFloat(value) >= 10000000 ) {
+	        	callback(new Error('请输入大于0并小于1千万的数'));
+	        }else {
+	        	callback();
+	        }
+	    };
 	    return {
 	    	logining: false,
 	        rechargeForm: {
@@ -92,12 +99,15 @@ export default {
 	          	],
 	          	amount: [
 	          		{ required: true, message:'请输入充值金额', trigger: 'blur' },
-	            	{ pattern:/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/, message: '请输入充值金额，支持小数点后2位', trigger: 'blur' }
+	            	{ pattern:/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/, message: '请输入充值金额，支持小数点后2位', trigger: 'blur' },
+	            	{ validator:validateMax, trigger: 'blur' }
 	          	],
 	          	pzpic: [
 	          		{ required: true, message: '请上传付款凭证', trigger: 'blur' }
 	          	]
-	       	}
+	       },
+	       userids:'',
+	       fileList1:''
 	    }
 	},
 	methods:{
@@ -130,15 +140,16 @@ export default {
 							        	confirmButtonText: '关闭',
 							        	showCancelButton:false,
 							        	closeOnClickModal:false,
-							        	showclose:false
+							        	showclose:false,
+							        	callback: action => {
+								            _this.logining = false;
+								        }
 							        }).then(() => {
 							        	
 							        }).catch(() => {
 							          	    
 							        });
 								}else{
-									var _lastRecharge = response.data.data.recordid;
-									sessionStorage.setItem('lastRecharge',JSON.stringify(_lastRecharge));
 									_this.$router.push({ path: '/RechargeStatus' });
 								}
 					     		
@@ -162,15 +173,22 @@ export default {
     		var _pzpic = response.data.imgurl;
     		_this.rechargeForm.pzpic = _pzpic;
     		this.$refs.rechargeForm.validateField('pzpic');
+    		
       	},
       	handleError: function (response) {
       		console.log(response)
+      	},
+      	handleUpload:function(){
+      		if(jQuery(".el-upload-list--text").find("li").length>0){
+      			jQuery(".el-upload-list--text").find("li").eq(0).remove();
+      		}
       	}
 	},
 	mounted() {
 		var _this = this;
 		var userinfo = sessionStorage.getItem('userinfo');
 		userinfo = JSON.parse(userinfo);
+		_this.userids = userinfo.userid;
 		_this.$http.post('http://192.168.188.148:9527/api/ptb/getlastinfo', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 	      		let _owner = response.data.owner,

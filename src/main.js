@@ -5,6 +5,7 @@ import store from './vuex/store'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
+/*import axios from 'axios';*/
 import ElementUI from 'element-ui'
 import '../theme/index.css'
 import '../theme/addnew.css'
@@ -18,7 +19,9 @@ Vue.use(VueRouter)
 Vue.use(ElementUI)
 Vue.use(Vuex)
 Vue.use(DataTables)
-	
+
+/*Vue.prototype.$http = axios*/
+/*axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'*/
 
 
 NProgress.configure({ showSpinner: false });

@@ -214,7 +214,7 @@ a.c666:hover { color: #3dbd7d;}
 .contact-us .el-button { height: 40px; padding: 6px 19px;}
 .contact-us .el-button [class*="el-icon-"] + span { margin-left: 10px; font-size: 14px; vertical-align: middle;}
 
-.contact-us-qq { position: fixed; z-index: 99; right: -268px; bottom: 100px; width: 256px; height: 388px; background: #fff; border-radius: 5px; box-shadow: 0 0 12px rgba(0,0,0,0.1);}
+.contact-us-qq { position: fixed; z-index: 99; right: -268px; bottom: 20px; width: 256px; background: #fff; border-radius: 5px; box-shadow: 0 0 12px rgba(0,0,0,0.1);}
 .contact-us-top { height: 46px; line-height: 46px; border-bottom: #eee 1px solid; overflow: hidden;}
 .contact-us-top span { float: left; margin-left: 27px; font-size: 16px; color: #333; line-height: 48px;}
 .contact-us-top em { float: right; color: #999; display:block; height: 46px; line-height: 46px; width: 46px; text-align: center; cursor: pointer;}
@@ -267,7 +267,7 @@ a.c666:hover { color: #3dbd7d;}
 .column-tt h3{ margin-left: 40px; font-size: 24px; color: #333; font-weight: normal;}
 .column-con { padding: 0px 40px 44px 40px;}
 .panel-bottom { position: absolute; bottom: -44px; left: 0; width: 100%; text-align: center; font-size: 13px; color: #aaa;}
-
+.panel-bottom a { color: #aaa;}
 .prompt-box { overflow: hidden; background: #fff; text-align: center;}
 .prompt-box .prompt-icon { margin-bottom: 12px;}
 .prompt-box .prompt-icon em { font-size: 87px; display: inline-block; color: #3dbd7d;}
@@ -590,6 +590,7 @@ a.c666:hover { color: #3dbd7d;}
 	border-radius: 3px;
 }
 .copyright { position: absolute; left: 0; bottom: 50px; width: 100%; text-align: center; color: #aaa; font-size: 13px;}
+.copyright a { color: #aaa;}
 .login-box h2.main-logo {
 	height: 60px;
 	text-align: center;
@@ -757,6 +758,7 @@ a.c666:hover { color: #3dbd7d;}
 .dia-recharge-details .el-dialog__body { padding: 30px 55px 30px 55px;}
 .dia-recharge-details .recdet-con-l { float: left; width: 595px;}
 .dia-recharge-details .recdet-con-l .el-form .el-form-item { margin-bottom: 20px;}
+.dia-recharge-details .recdet-con-l .el-form .el-form-item .el-form-item__content { width: auto;}
 .dia-recharge-details .recdet-con-l .el-form .el-form-item .is-disabled .el-input__inner { background: #fff; border: none; cursor:text; color: #333; padding-left: 0;}
 .dia-recharge-details .recdet-con-r { float: right; width: 190px;}
 .dia-recharge-details .recdet-con-r h2 { color: #666; font-weight: normal; font-size: 16px; margin-bottom: 30px; margin-top: 4px;}
