@@ -220,7 +220,7 @@ a.c666:hover { color: #3dbd7d;}
 .contact-us-top em { float: right; color: #999; display:block; height: 46px; line-height: 46px; width: 46px; text-align: center; cursor: pointer;}
 .contact-us-top em:hover { color: #333;}
 .contact-us-bot { padding: 0 27px;}
-.contact-us-bot dl.kf-item { border-bottom: #eee 1px solid; padding: 16px 0;}
+.contact-us-bot dl.kf-item { border-bottom: #eee 1px solid; padding: 10px 0;}
 .contact-us-bot dl.kf-item:last-child { border-bottom: none;}
 .contact-us-bot dl.kf-item dt { margin-bottom: 6px;}
 .contact-us-bot dl.kf-item dt span { color: #333; font-size: 20px; margin-right: 2px;}

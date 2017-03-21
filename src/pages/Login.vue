@@ -28,31 +28,38 @@
 			</div>
 			<div class="contact-us-bot">
 				<dl class="kf-item">
-					<dt><span>宋达</span><em>（华北地区）</em></dt>
+					<dt><span>宋达</span></dt>
 					<dd>
 						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2355617593</span><a href="http://wpa.qq.com/msgrd?v=3&uin=2355617593&site=qq&menu=yes" target="_blank" class="blue">立即联系</a></h3>
 						<h4><em><img src="../assets/common/email-icon.png" /></em>songda@17of.com</h4>
 					</dd>
 				</dl>
 				<dl class="kf-item">
-					<dt><span>汪靖</span><em>（华东地区）</em></dt>
+					<dt><span>汪靖</span></dt>
 					<dd>
 						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850662319</span><a href="http://wpa.qq.com/msgrd?v=3&uin=2850662319&site=qq&menu=yes" target="_blank" class="blue">立即联系</a></h3>
 						<h4><em><img src="../assets/common/email-icon.png" /></em>wangjing01@17of.com</h4>
 					</dd>
 				</dl>
 				<dl class="kf-item">
-					<dt><span>沈孟</span><em>（华南地区）</em></dt>
+					<dt><span>沈孟</span></dt>
 					<dd>
 						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850917857</span><a href="http://wpa.qq.com/msgrd?v=3&uin=2850917857&site=qq&menu=yes" target="_blank" class="blue">立即联系</a></h3>
 						<h4><em><img src="../assets/common/email-icon.png" /></em>shenmeng@17of.com</h4>
 					</dd>
 				</dl>
 				<dl class="kf-item">
-					<dt><span>李丽珊</span><em>（华中地区）</em></dt>
+					<dt><span>李丽珊</span></dt>
 					<dd>
 						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850917840</span><a href="http://wpa.qq.com/msgrd?v=3&uin=2850917840&site=qq&menu=yes" target="_blank" class="blue">立即联系</a></h3>
 						<h4><em><img src="../assets/common/email-icon.png" /></em>lilishan@17of.com</h4>
+					</dd>
+				</dl>
+				<dl class="kf-item">
+					<dt><span>赵晨</span></dt>
+					<dd>
+						<h3><em><img src="../assets/common/qq-icon.png" /></em><span>2850917932</span><a href="http://wpa.qq.com/msgrd?v=3&uin=2850917932&site=qq&menu=yes" target="_blank" class="blue">立即联系</a></h3>
+						<h4><em><img src="../assets/common/email-icon.png" /></em>zhaochen@17of.com</h4>
 					</dd>
 				</dl>
 			</div>
@@ -96,7 +103,7 @@ export default {
             		_this.logining = true;
             		NProgress.start();
             		var loginParams = { username: _this.loginForm.account, password: md5(_this.loginForm.checkPass)};
-				    _this.$http.post('http://192.168.188.148:9527/api/user/login', loginParams, {
+				    _this.$http.post('http://api.75177.com/api/user/login', loginParams, {
 				        headers: {
 				        },
 				        emulateJSON: true

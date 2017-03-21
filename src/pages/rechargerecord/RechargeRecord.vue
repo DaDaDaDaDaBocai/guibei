@@ -247,14 +247,14 @@ export default {
 	    	};
 	    	_this.Status = _this.screenForm.status;
 			var onExportParams = { userid: userinfo.userid,startTime:_this.StartTime,endTime:_this.EndTime,status:_this.Status,category:1};
-			window.location.href= 'http://192.168.188.148:9527/api/ptb/exportrecordlist?userid='+onExportParams.userid+'&startTime='+onExportParams.startTime+'&endTime='+onExportParams.endTime+'&status='+onExportParams.status+'&category='+onExportParams.category;
+			window.location.href= 'http://api.75177.com/api/ptb/exportrecordlist?userid='+onExportParams.userid+'&startTime='+onExportParams.startTime+'&endTime='+onExportParams.endTime+'&status='+onExportParams.status+'&category='+onExportParams.category;
     	},
     	changePage(){
     		var _this = this;
 			var userinfo = sessionStorage.getItem('userinfo');
 			userinfo = JSON.parse(userinfo);
 			var recordTableParams = { userid: userinfo.userid,pageno:_this.currentPage,pagesize:_this.SizePage,startTime:_this.StartTime,endTime:_this.EndTime,sortbycreatetime:_this.sortBycreatetime,sortbyverfiytime:_this.sortByverfiytime,status:_this.Status};
-			_this.$http.post('http://192.168.188.148:9527/api/ptb/getrechargerecordlist', recordTableParams , {headers: {},emulateJSON: true}).then(
+			_this.$http.post('http://api.75177.com/api/ptb/getrechargerecordlist', recordTableParams , {headers: {},emulateJSON: true}).then(
 				function(response){
 					_this.recordTable = response.data.data.data;
 					_this.Total = response.data.data.page.totalCount;
@@ -276,7 +276,7 @@ export default {
 	    },
 	    viewDetails(index){
 	    	var _this = this;
-	    	_this.$http.post('http://192.168.188.148:9527/api/ptb/getrecordbyid', {orderid:_this.recordTable[index].order_id} , {headers: {},emulateJSON: true}).then(
+	    	_this.$http.post('http://api.75177.com/api/ptb/getrecordbyid', {orderid:_this.recordTable[index].order_id} , {headers: {},emulateJSON: true}).then(
 				function(response){
 					let { msg, code } = response.data;	
 					if(code != 0){
@@ -304,7 +304,6 @@ export default {
 						_this.recdetForm.verify_time = response.data.data.verify_time;
 						 _this.analysisStats();
 						_this.dialogFormVisible = true;
-						console.log(_this.recdetForm)
 					}
 				},function(response) {
 				    // 这里是处理错误的回调

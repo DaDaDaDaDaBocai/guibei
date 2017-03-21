@@ -44,7 +44,7 @@ let routes = [
         path: '/',
         component: Home,
         name: '主导航-平台预览',
-        module_id:'100010',
+        module_id:'100000',
         iconCls: 'icon el-icon-ptyl',
         leaf: true,//只有一个节点
         children: [
@@ -55,7 +55,7 @@ let routes = [
         path: '/',
         component: Home,
         name: '主导航-余额充值',
-        module_id:'100002',
+        module_id:'100001',
         iconCls: 'icon el-icon-yecz',
         leaf: true,//只有一个节点
         children: [
@@ -66,7 +66,7 @@ let routes = [
         path: '/',
         component: Home,
         name: '主导航-充值记录',
-        module_id:'100001',
+        module_id:'100002',
         iconCls: 'icon el-icon-czjl',
         leaf: true,//只有一个节点
         children: [

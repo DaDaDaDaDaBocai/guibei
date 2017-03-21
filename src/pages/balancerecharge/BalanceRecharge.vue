@@ -31,7 +31,7 @@
 		</div>
 		<div class="recharge-bot">
 			<h2 class="recharge-tit">第二步/填写付款信息：</h2>
-			<el-form :model="rechargeForm" :rules="rules" ref="rechargeForm" label-position="left" label-width="260px" class="recharge-form" :file-list="fileList1">
+			<el-form :model="rechargeForm" :rules="rules" ref="rechargeForm" label-position="left" label-width="260px" class="recharge-form">
 			  	<el-form-item label="户名：" prop="owner">
 			  		<el-input v-model="rechargeForm.owner" size="large" icon="close1" placeholder="请输入户名" @click="rechargeForm.owner =''" class="case-data"></el-input>
 			  	</el-form-item>
@@ -48,12 +48,12 @@
 					<em class="c333">元</em>
 			  	</el-form-item>
 			  	<el-form-item label="付款凭证：" prop="pzpic">
-			    	<el-upload class="upload" ref="uploads" drag action="http://192.168.188.148:9527/api/uploadimage" :on-success="handleSuccess" :on-error="handleError" :before-upload="handleUpload">
+			    	<el-upload class="upload" drag action="http://api.75177.com/api/uploadimage" :on-success="handleSuccess" :on-error="handleError" :before-upload="handleBefore">
 						<i class="el-icon-upload"></i>
 						<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 						<div class="el-upload__tip" slot="tip">
 							<p>银行付款凭证，是在银行办理转账结算后，<br/>银行提供的书面凭证单。<br/>请点击右侧上传凭证照片。</p>
-							<p>·PNG或者JPG格式<br/>·大小控制在2M以内</p>
+							<p>·PNG或者JPG或者gif格式<br/>·大小控制在2M以内</p>
 						</div>
 					</el-upload>
 			  	</el-form-item>
@@ -72,6 +72,15 @@ export default {
 	        if (parseFloat(value) >= 10000000 ) {
 	        	callback(new Error('请输入大于0并小于1千万的数'));
 	        }else {
+	        	callback();
+	        }
+	    };
+	    var typeSize = (rule, value, callback) => {
+	        if ( this.isTypeText !== '' ) {
+	        	callback(new Error('上传图片只能是.png.jpg.gif格式!'));
+	        }else if( this.isLt50MText !== '') {
+	        	callback(new Error('上传图片大小不能超过 50MB!'));
+	        }else{
 	        	callback();
 	        }
 	    };
@@ -103,11 +112,13 @@ export default {
 	            	{ validator:validateMax, trigger: 'blur' }
 	          	],
 	          	pzpic: [
-	          		{ required: true, message: '请上传付款凭证', trigger: 'blur' }
+	          		{ validator:typeSize, trigger: 'blur' },
+	          		{ required: true, message: '请上传付款凭证', trigger: 'submit' }
 	          	]
 	       },
 	       userids:'',
-	       fileList1:''
+	       isTypeText:'',
+	       isLt50MText:''
 	    }
 	},
 	methods:{
@@ -129,7 +140,7 @@ export default {
 			        }).then(() => {
 			        	
 			        	var submitParams = { userid:userinfo.userid,owner:_this.rechargeForm.owner,type:1,cardno:_this.rechargeForm.cardno,bankname:_this.rechargeForm.bankname,amount:_this.rechargeForm.amount,pzpic:_this.rechargeForm.pzpic};
-		            	_this.$http.post('http://192.168.188.148:9527/api/ptb/addrechargerecord', submitParams, {headers: {},emulateJSON: true}).then(
+		            	_this.$http.post('http://api.75177.com/api/ptb/addrechargerecord', submitParams, {headers: {},emulateJSON: true}).then(
 							function(response){
 								let { msg, code } = response.data;	
 								if(code != 0){
@@ -171,17 +182,39 @@ export default {
     	handleSuccess: function (response) {
     		var _this = this;
     		var _pzpic = response.data.imgurl;
+    		_this.isTypeText = '';
+    		_this.isLt50MText = '';
     		_this.rechargeForm.pzpic = _pzpic;
-    		this.$refs.rechargeForm.validateField('pzpic');
-    		
+    		_this.$refs.rechargeForm.validateField('pzpic');
       	},
       	handleError: function (response) {
       		console.log(response)
       	},
-      	handleUpload:function(){
+      	handleBefore:function(file){
+      		var _this = this;
+      		const isType = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif';
+	        const isLt50M = file.size / 1024 / 1024 < 50;
+	        if (!isType) {
+	        	_this.isTypeText = '上传图片只能是.png.jpg.gif格式!';
+	        	_this.$refs.rechargeForm.validateField('pzpic');
+	        	jQuery(".el-upload-list--text").find("li").eq(0).remove();
+	        	_this.rechargeForm.pzpic = "";
+	        	return false;
+	        };
+	        
+	        if (!isLt50M) {
+	        	_this.isLt50MText = '上传图片大小不能超过 50MB!';
+	        	_this.isTypeText = '';
+	        	_this.$refs.rechargeForm.validateField('pzpic');
+	        	jQuery(".el-upload-list--text").find("li").eq(0).remove();
+	        	_this.rechargeForm.pzpic = '';
+	        	return false;
+	        };
+	        
+	        
       		if(jQuery(".el-upload-list--text").find("li").length>0){
       			jQuery(".el-upload-list--text").find("li").eq(0).remove();
-      		}
+      		};
       	}
 	},
 	mounted() {
@@ -189,7 +222,7 @@ export default {
 		var userinfo = sessionStorage.getItem('userinfo');
 		userinfo = JSON.parse(userinfo);
 		_this.userids = userinfo.userid;
-		_this.$http.post('http://192.168.188.148:9527/api/ptb/getlastinfo', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
+		_this.$http.post('http://api.75177.com/api/ptb/getlastinfo', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 	      		let _owner = response.data.owner,
 	      			_bankname = response.data.bankname,
