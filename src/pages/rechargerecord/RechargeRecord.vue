@@ -256,8 +256,13 @@ export default {
 			var recordTableParams = { userid: userinfo.userid,pageno:_this.currentPage,pagesize:_this.SizePage,startTime:_this.StartTime,endTime:_this.EndTime,sortbycreatetime:_this.sortBycreatetime,sortbyverfiytime:_this.sortByverfiytime,status:_this.Status};
 			_this.$http.post('http://api.75177.com/api/ptb/getrechargerecordlist', recordTableParams , {headers: {},emulateJSON: true}).then(
 				function(response){
-					_this.recordTable = response.data.data.data;
-					_this.Total = response.data.data.page.totalCount;
+					let { msg, code } = response.data;
+					if( code == "0"){
+						_this.recordTable = response.data.data.data;
+						_this.Total = response.data.data.page.totalCount;
+					}else{
+						_this.$message.error(msg);
+					}
 				},function(response) {
 				    // 这里是处理错误的回调
 				    console.log(response)
@@ -279,7 +284,7 @@ export default {
 	    	_this.$http.post('http://api.75177.com/api/ptb/getrecordbyid', {orderid:_this.recordTable[index].order_id} , {headers: {},emulateJSON: true}).then(
 				function(response){
 					let { msg, code } = response.data;	
-					if(code != 0){
+					if(code !== "0"){
 						_this.$confirm('', '友情提醒', {
 		     				message1:'',
 		     				message2:'查看失败',

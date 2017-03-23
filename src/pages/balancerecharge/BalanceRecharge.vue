@@ -143,7 +143,7 @@ export default {
 		            	_this.$http.post('http://api.75177.com/api/ptb/addrechargerecord', submitParams, {headers: {},emulateJSON: true}).then(
 							function(response){
 								let { msg, code } = response.data;	
-								if(code != 0){
+								if(code !== "0"){
 									_this.$confirm('', '友情提醒', {
 					     				message1:'',
 					     				message2:'充值失败',
@@ -224,13 +224,18 @@ export default {
 		_this.userids = userinfo.userid;
 		_this.$http.post('http://api.75177.com/api/ptb/getlastinfo', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
-	      		let _owner = response.data.owner,
-	      			_bankname = response.data.bankname,
-	      			_cardno = response.data.cardno;
-	      			
-	      		_this.rechargeForm.owner = _owner;
-	      		_this.rechargeForm.bankname = _bankname;
-	      		_this.rechargeForm.cardno = _cardno;
+				let { msg, code } = response.data;	
+				if(code !== "0"){
+		      		let _owner = response.data.owner,
+		      			_bankname = response.data.bankname,
+		      			_cardno = response.data.cardno;
+		      			
+		      		_this.rechargeForm.owner = _owner;
+		      		_this.rechargeForm.bankname = _bankname;
+		      		_this.rechargeForm.cardno = _cardno;
+		        }else{
+		        	_this.$message.error(msg);
+		        }
 	      		
 	     		
 			},function(response) {

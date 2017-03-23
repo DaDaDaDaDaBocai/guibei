@@ -94,7 +94,12 @@ export default {
 			userinfo = JSON.parse(userinfo);
 	    	_this.$http.post('http://api.75177.com/api/ptb/getrechargerecordlist', { userid: userinfo.userid,pageno:1,pagesize:6,sortbycreatetime:_this.sortBycreatetime,sortbyverfiytime:_this.sortByverfiytime}, {headers: {},emulateJSON: true}).then(
 				function(response){
-					_this.tableData1 = response.data.data.data;
+					let { msg, code } = response.data;
+					if( code == "0"){
+						_this.tableData1 = response.data.data.data;
+					}else{
+						_this.$message.error(msg);
+					}
 					
 				},function(response) {
 				    // 这里是处理错误的回调
@@ -129,31 +134,34 @@ export default {
 	    _this.$http.post('http://api.75177.com/api/user/getaccountinfo', { userid: userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 				
-				let amount = parseFloat(response.data.data.amount),
-					warn = parseFloat(response.data.data.warn), //余额警戒值
-					lowest = parseFloat(response.data.data.lowest); //余额最低值
+				let { msg, code } = response.data;
+				if( code == "0"){
+					let amount = parseFloat(response.data.data.amount),
+						warn = parseFloat(response.data.data.warn), //余额警戒值
+						lowest = parseFloat(response.data.data.lowest); //余额最低值
+						
+					_this.amount = amount;
 					
-				_this.amount = amount;
-				
-				if(amount>=warn){
-					_this.isSuccess = true;
-					_this.balanceStatus = "账户正常";
-				}else if(amount<warn && amount>=lowest){
-					_this.isError = true;
-					_this.balanceStatus = "余额较低，请及时充值";
+					if(amount>=warn){
+						_this.isSuccess = true;
+						_this.balanceStatus = "账户正常";
+					}else if(amount<warn && amount>=lowest){
+						_this.isError = true;
+						_this.balanceStatus = "余额较低，请及时充值";
+					}else{
+						_this.isError = true;
+						_this.balanceStatus = "余额过低，已关闭支付";
+					};
+					
+					if(lowest>=0){
+						_this.creditModel = false;
+					}else{
+						_this.creditModel = true;
+						_this.credit = -lowest;
+					}
 				}else{
-					_this.isError = true;
-					_this.balanceStatus = "余额过低，已关闭支付";
-				};
-				
-				if(lowest>=0){
-					_this.creditModel = false;
-				}else{
-					_this.creditModel = true;
-					_this.credit = -lowest;
+					_this.$message.error(msg);
 				}
-								
-				
 				
 			},function(response) {
 			    // 这里是处理错误的回调

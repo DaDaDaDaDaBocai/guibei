@@ -12,7 +12,7 @@
 					<el-dropdown trigger="hover">
 						<span class="el-dropdown-link">{{sysUserName}}（ID：{{sysUserId}}）<i class="el-icon-caret-bottom el-icon--right"></i></span>
 						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item @click.native="dialogFormVisible=true">修改密码</el-dropdown-item>
+							<el-dropdown-item @click.native="modifyPassword()">修改密码</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
 				</el-col>
@@ -56,10 +56,9 @@
 				<!--</el-col>-->
 			</el-col>
 			<el-row class="panel-bottom">Copyright 2017-2020 © 南京规贝软件科技有限公司版权所有 <a href="http://www.miitbeian.gov.cn/publish/query/indexFirst.action" target="_blank">苏ICP备：16030832号</a> <a href="http://sq.ccm.gov.cn/ccnt/sczr/service/business/emark/toDetail/d09fba96d1fe4d61bca66f43efb68e7d" target="_blank">苏网文 [2015]2034-038号</a></el-row>
-			
 			<el-dialog title="修改密码" custom-class="modify-password" v-model="dialogFormVisible">
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" >
-			    	<el-form-item label="原密码：" :label-width="formLabelWidth" prop="oldpwd">
+			    	<el-form-item label="原密码：" :label-width="formLabelWidth" prop="oldpwd" v-bind:error="err">
 			      		<el-input v-model="ruleForm.oldpwd" auto-complete="off" type="password" size="large" icon="by" placeholder="请输入原密码"  :on-icon-click="handleIconClick"></el-input>
 			    	</el-form-item>
 			    	<el-form-item label="新密码：" :label-width="formLabelWidth" prop="pass">
@@ -126,44 +125,6 @@ import md5 from 'md5'
 import routes from 'routes'
 export default {
 	data() {
-		var checkOldpwd = (rule, value, callback) => {
-			var _this = this;
-			var userinfo = sessionStorage.getItem('userinfo');
-			userinfo = JSON.parse(userinfo);
-    		var ModpasswordParams = { userid: userinfo.userid, oldpwd:md5(_this.ruleForm.oldpwd),newpwd: md5(_this.ruleForm.pass)};
-    		_this.$http.post('http://api.75177.com/api/user/modifypwd', ModpasswordParams, {headers: {},emulateJSON: true}).then(
-				function(response){
-		      		let { msg, code } = response.data;
-		     		if (code != 0) {
-		     			callback(new Error(msg));
-		     		}else{
-		     			_this.dialogFormVisible = false;
-		     			_this.$confirm('', '友情提醒', {
-		     				message1:'密码修改成功',
-		     				message2:'',
-	     					message:'请使用新密码重新登录',
-				        	confirmButtonText: '去登录',
-				        	customClass:'no-close',
-				        	showCancelButton:false,
-				        	closeOnClickModal:false,
-				        	showclose:false
-				        }).then(() => {
-				        	_this.oldpwd = "";
-				        	_this.pass = "";
-				        	_this.checkPass = "";
-				        	sessionStorage.removeItem('userinfo');
-							_this.$router.push('/login');
-				        }).catch(() => {
-				          	    
-				        });
-		     		}
-				},function(response) {
-				    // 这里是处理错误的回调
-				    console.log(response)
-				}
-			);
-			
-	    };
 		var validatePass = (rule, value, callback) => {
 	        if (value === '') {
 	        	callback(new Error('请输入6~20位数字与字母组合'));
@@ -196,8 +157,7 @@ export default {
 	        rules: {
 	        	oldpwd: [
 	            	{ required: true, message: '请输入原密码', trigger: 'blur' },
-	            	{ min: 6, max: 20, message: '请输入6~20位数字与字母组合', trigger: 'blur' },
-	            	{validator: checkOldpwd, trigger: 'submit' }
+	            	{ min: 6, max: 20, message: '请输入6~20位数字与字母组合', trigger: 'blur' }
 	          	],
 	          	pass: [
 		            { required: true, validator: validatePass, trigger: 'blur' },
@@ -213,7 +173,8 @@ export default {
 	        isError:false,
 	        balanceStatus:'',
 	        isActive1:false,
-	        isActive2:false
+	        isActive2:false,
+	        err:''
 		}
 	},
 	methods: {
@@ -252,15 +213,20 @@ export default {
 				userinfo = JSON.parse(userinfo);
 				_this.$http.post('http://api.75177.com/api/user/exit', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 					function(response){
-						
+						let { msg, code } = response.data;
+			     		if (code !== "0") {
+			     			sessionStorage.removeItem('userinfo');
+							_this.$router.push('/login');
+			     		}else{
+			     			_this.$message.error(msg);
+			     		}
 					},function(response) {
 					        // 这里是处理错误的回调
 					    console.log(response)
 					}
 				);
 				
-				sessionStorage.removeItem('userinfo');
-				_this.$router.push('/login');
+				
 			}).catch(() => {
 
 			});
@@ -269,11 +235,56 @@ export default {
 			var _this = this;
 	        _this.$refs[formName].validate((valid) => {
 	        	if (valid) {
-	        		
+					var userinfo = sessionStorage.getItem('userinfo');
+					userinfo = JSON.parse(userinfo);
+		    		var ModpasswordParams = { userid: userinfo.userid, oldpwd:md5(_this.ruleForm.oldpwd),newpwd: md5(_this.ruleForm.pass)};
+		    		_this.$http.post('http://api.75177.com/api/user/modifypwd', ModpasswordParams, {headers: {},emulateJSON: true}).then(
+						function(response){
+				      		let { msg, code } = response.data;
+				     		if (code !== "0") {
+				     			_this.err=msg;
+				     		}else{
+				     			_this.dialogFormVisible = false;
+				     			_this.$confirm('', '友情提醒', {
+				     				message1:'密码修改成功',
+				     				message2:'',
+			     					message:'请使用新密码重新登录',
+						        	confirmButtonText: '去登录',
+						        	customClass:'no-close',
+						        	showCancelButton:false,
+						        	closeOnClickModal:false,
+						        	showclose:false
+						        }).then(() => {
+						        	_this.oldpwd = "";
+						        	_this.pass = "";
+						        	_this.checkPass = "";
+						        	sessionStorage.removeItem('userinfo');
+									_this.$router.push('/login');
+						        }).catch(() => {
+						          	    
+						        });
+				     		}
+						},function(response) {
+						    // 这里是处理错误的回调
+						    alert(response)
+						}
+					)
 	          	}else{
 	            	return false;
 	          	}
 	        });
+	    },
+	    modifyPassword(){
+	    	var _this = this;
+	    	_this.dialogFormVisible = true;
+	    	try{
+	    		_this.$refs['ruleForm'].resetFields();
+	    	}catch(e){
+	    		//TODO handle the exception
+	    	}
+	    	_this.ruleForm.oldpwd = "";
+        	_this.ruleForm.pass = "";
+        	_this.ruleForm.checkPass = "";
 	    },
 	    kfShow(){
 	    	var _this = this;
@@ -297,7 +308,7 @@ export default {
 		_this.$http.post('http://api.75177.com/api/user/checkfirstpassword', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 	      		let { msg, code } = response.data;
-	     		if (code == 0) {
+	     		if (code == "0") {
 	     			if(response.data.data.flag == 1){
 	     				_this.$confirm('', '友情提醒', {
 	     					message1:'',
@@ -326,88 +337,94 @@ export default {
 		
 		_this.$http.post('http://api.75177.com/api/user/getMenuTree', { userid: userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
-				var newNav = [];
-				var transfer = [];
-				var transfer1 = [];
-				var transfer2 = [];
-				var transfer3 = [];
-				var CloneRoutes = routes;
-				var DataNav = response.data.data;
 				
-				for(var j = 0, len=DataNav.length; j < len; j++) {
-   					if(DataNav[j].parent_id == 0){
-   						transfer.push(DataNav[j]);
-   					}else{
-   						transfer1.push(DataNav[j]);
-   					}
-				};
-				
-				transfer.sort(function(a,b){
-					return parseInt(a.sort) > parseInt(b.sort) ? 1 : parseInt(a.sort) == parseInt(b.sort) ? 0 : -1;
-				});
-				
-				transfer1.sort(function(a,b){
-					return parseInt(a.sort) > parseInt(b.sort) ? 1 : parseInt(a.sort) == parseInt(b.sort) ? 0 : -1;
-				});
-				
-				CloneRoutes.forEach(function(value,index,array) {
+				let { msg, code } = response.data;
+				if(code == "0"){
+					var newNav = [];
+					var transfer = [];
+					var transfer1 = [];
+					var transfer2 = [];
+					var transfer3 = [];
+					var CloneRoutes = routes;
+					var DataNav = response.data.data;
 					
-					transfer.forEach(function(_value,index,array){
-						if(value.module_id == _value.module_id){
-							transfer2.push(value);
-						}
+					for(var j = 0, len=DataNav.length; j < len; j++) {
+	   					if(DataNav[j].parent_id == 0){
+	   						transfer.push(DataNav[j]);
+	   					}else{
+	   						transfer1.push(DataNav[j]);
+	   					}
+					};
+					
+					transfer.sort(function(a,b){
+						return parseInt(a.sort) > parseInt(b.sort) ? 1 : parseInt(a.sort) == parseInt(b.sort) ? 0 : -1;
 					});
 					
-				});
-				
-				
-				var dd = function(){
+					transfer1.sort(function(a,b){
+						return parseInt(a.sort) > parseInt(b.sort) ? 1 : parseInt(a.sort) == parseInt(b.sort) ? 0 : -1;
+					});
 					
-					transfer2.forEach(function(_value,_index,_array) {
+					CloneRoutes.forEach(function(value,index,array) {
 						
-						if(_value.leaf !== true && _value.hidden !== true ){
+						transfer.forEach(function(_value,index,array){
+							if(value.module_id == _value.module_id){
+								transfer2.push(value);
+							}
+						});
+						
+					});
+					
+					
+					var dd = function(){
+						
+						transfer2.forEach(function(_value,_index,_array) {
 							
-							_value.children.forEach(function(__value,__index,__array) {
+							if(_value.leaf !== true && _value.hidden !== true ){
 								
-								var flag = 1;
-								
-								
-							   	transfer1.forEach(function(value,index,array) {
+								_value.children.forEach(function(__value,__index,__array) {
 									
-									if(value.module_id == __value.module_id){
+									var flag = 1;
+									
+									
+								   	transfer1.forEach(function(value,index,array) {
 										
-										flag = 0;
-										
-									}
-									
-									
-									if( index == array.length-1){
-									
-										if(flag == 1){
+										if(value.module_id == __value.module_id){
 											
-											transfer2[_index].children.splice(__index,1);
-											dd();
+											flag = 0;
+											
 										}
 										
 										
-									}
-									
+										if( index == array.length-1){
+										
+											if(flag == 1){
+												
+												transfer2[_index].children.splice(__index,1);
+												dd();
+											}
+											
+											
+										}
+										
+										
+									});
+									   
 									
 								});
-								   
 								
-							});
+							}	
 							
-						}	
+						});
 						
-					});
+					};
 					
-				};
-				
-				dd();
-				
-			    _this.nav = transfer2;
-				
+					dd();
+					
+				    _this.nav = transfer2;
+			    
+			   	}else{
+				   	_this.$message.error(msg);
+			   }
 			},function(response) {
 			    // 这里是处理错误的回调
 			    console.log(response)
@@ -419,22 +436,26 @@ export default {
 		
 		_this.$http.post('http://api.75177.com/api/user/getaccountinfo', { userid: userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
-				
-				let amount = parseFloat(response.data.data.amount),
-					warn = parseFloat(response.data.data.warn), //余额警戒值
-					lowest = parseFloat(response.data.data.lowest); //余额最低值
+				let { msg, code } = response.data;
+				if( code == "0"){
+					let amount = parseFloat(response.data.data.amount),
+						warn = parseFloat(response.data.data.warn), //余额警戒值
+						lowest = parseFloat(response.data.data.lowest); //余额最低值
+						
+					_this.amount = amount;
 					
-				_this.amount = amount;
-				
-				if(amount>=warn){
-					_this.isSuccess = true;
-					_this.balanceStatus = "账户正常";
-				}else if(amount<warn && amount>=lowest){
-					_this.isError = true;
-					_this.balanceStatus = "余额较低";
+					if(amount>=warn){
+						_this.isSuccess = true;
+						_this.balanceStatus = "账户正常";
+					}else if(amount<warn && amount>=lowest){
+						_this.isError = true;
+						_this.balanceStatus = "余额较低";
+					}else{
+						_this.isError = true;
+						_this.balanceStatus = "余额过低";
+					}
 				}else{
-					_this.isError = true;
-					_this.balanceStatus = "余额过低";
+					_this.$message.error(msg);
 				}
 								
 			},function(response) {
