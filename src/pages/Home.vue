@@ -214,7 +214,7 @@ export default {
 				_this.$http.post('http://api.75177.com/api/user/exit', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 					function(response){
 						let { msg, code } = response.data;
-			     		if (code !== "0") {
+			     		if (code == "0") {
 			     			sessionStorage.removeItem('userinfo');
 							_this.$router.push('/login');
 			     		}else{
