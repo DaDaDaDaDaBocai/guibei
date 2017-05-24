@@ -1,3 +1,4 @@
+import Index from './pages/Index.vue'
 import Login from './pages/Login.vue'
 import NotFound from './pages/404.vue'
 import Home from './pages/Home.vue'
@@ -8,7 +9,16 @@ import BalanceRecharge from './pages/balancerecharge/BalanceRecharge.vue'
 import RechargeRecord from './pages/rechargerecord/RechargeRecord.vue'
 import RechargeStatus from './pages/balancerecharge/RechargeStatus.vue'
 
+
 let routes = [
+	{
+        path: '/index',
+        component: Login,
+        name: '',
+        module_id:'0',
+        hidden: true,
+        children: []
+    },
     {
         path: '/login',
         component: Login,

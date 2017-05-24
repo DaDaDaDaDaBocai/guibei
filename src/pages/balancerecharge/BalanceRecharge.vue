@@ -48,7 +48,7 @@
 					<em class="c333">元</em>
 			  	</el-form-item>
 			  	<el-form-item label="付款凭证：" prop="pzpic">
-			    	<el-upload class="upload" drag action="http://api.75177.com/api/uploadimage" :on-success="handleSuccess" :on-error="handleError" :before-upload="handleBefore">
+			    	<el-upload class="upload" drag action="http://192.168.188.148:9527/api/uploadimage" :on-success="handleSuccess" :on-error="handleError" :before-upload="handleBefore">
 						<i class="el-icon-upload"></i>
 						<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 						<div class="el-upload__tip" slot="tip">
@@ -140,7 +140,7 @@ export default {
 			        }).then(() => {
 			        	
 			        	var submitParams = { userid:userinfo.userid,owner:_this.rechargeForm.owner,type:1,cardno:_this.rechargeForm.cardno,bankname:_this.rechargeForm.bankname,amount:_this.rechargeForm.amount,pzpic:_this.rechargeForm.pzpic};
-		            	_this.$http.post('http://api.75177.com/api/ptb/addrechargerecord', submitParams, {headers: {},emulateJSON: true}).then(
+		            	_this.$http.post('http://192.168.188.148:9527/api/ptb/addrechargerecord', submitParams, {headers: {},emulateJSON: true}).then(
 							function(response){
 								let { msg, code } = response.data;	
 								if(code !== "0"){
@@ -222,7 +222,7 @@ export default {
 		var userinfo = sessionStorage.getItem('userinfo');
 		userinfo = JSON.parse(userinfo);
 		_this.userids = userinfo.userid;
-		_this.$http.post('http://api.75177.com/api/ptb/getlastinfo', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
+		_this.$http.post('http://192.168.188.148:9527/api/ptb/getlastinfo', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 				let { msg, code } = response.data;	
 				if(code !== "0"){

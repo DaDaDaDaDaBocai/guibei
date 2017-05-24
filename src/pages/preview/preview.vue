@@ -92,7 +92,7 @@ export default {
 	    	var _this = this;
 	    	var userinfo = sessionStorage.getItem('userinfo');
 			userinfo = JSON.parse(userinfo);
-	    	_this.$http.post('http://api.75177.com/api/ptb/getrechargerecordlist', { userid: userinfo.userid,pageno:1,pagesize:6,sortbycreatetime:_this.sortBycreatetime,sortbyverfiytime:_this.sortByverfiytime}, {headers: {},emulateJSON: true}).then(
+	    	_this.$http.post('http://192.168.188.148:9527/api/ptb/getrechargerecordlist', { userid: userinfo.userid,pageno:1,pagesize:6,sortbycreatetime:_this.sortBycreatetime,sortbyverfiytime:_this.sortByverfiytime}, {headers: {},emulateJSON: true}).then(
 				function(response){
 					let { msg, code } = response.data;
 					if( code == "0"){
@@ -131,7 +131,7 @@ export default {
 		var userinfo = sessionStorage.getItem('userinfo');
 		userinfo = JSON.parse(userinfo);
 		// 账户信息
-	    _this.$http.post('http://api.75177.com/api/user/getaccountinfo', { userid: userinfo.userid}, {headers: {},emulateJSON: true}).then(
+	    _this.$http.post('http://192.168.188.148:9527/api/user/getaccountinfo', { userid: userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 				
 				let { msg, code } = response.data;

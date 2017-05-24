@@ -211,7 +211,7 @@ export default {
 				var _this = this;
 				var userinfo = sessionStorage.getItem('userinfo');
 				userinfo = JSON.parse(userinfo);
-				_this.$http.post('http://api.75177.com/api/user/exit', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
+				_this.$http.post('http://192.168.188.148:9527/api/user/exit', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 					function(response){
 						let { msg, code } = response.data;
 			     		if (code == "0") {
@@ -238,7 +238,7 @@ export default {
 					var userinfo = sessionStorage.getItem('userinfo');
 					userinfo = JSON.parse(userinfo);
 		    		var ModpasswordParams = { userid: userinfo.userid, oldpwd:md5(_this.ruleForm.oldpwd),newpwd: md5(_this.ruleForm.pass)};
-		    		_this.$http.post('http://api.75177.com/api/user/modifypwd', ModpasswordParams, {headers: {},emulateJSON: true}).then(
+		    		_this.$http.post('http://192.168.188.148:9527/api/user/modifypwd', ModpasswordParams, {headers: {},emulateJSON: true}).then(
 						function(response){
 				      		let { msg, code } = response.data;
 				     		if (code !== "0") {
@@ -305,7 +305,7 @@ export default {
 			_this.sysUserName = userinfo.channelname || '';
 			_this.sysUserId = userinfo.userid || '';
 		};
-		_this.$http.post('http://api.75177.com/api/user/checkfirstpassword', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
+		_this.$http.post('http://192.168.188.148:9527/api/user/checkfirstpassword', {userid:userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 	      		let { msg, code } = response.data;
 	     		if (code == "0") {
@@ -335,7 +335,7 @@ export default {
 		
 		//获取菜单
 		
-		_this.$http.post('http://api.75177.com/api/user/getMenuTree', { userid: userinfo.userid}, {headers: {},emulateJSON: true}).then(
+		_this.$http.post('http://192.168.188.148:9527/api/user/getMenuTree', { userid: userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 				
 				let { msg, code } = response.data;
@@ -434,7 +434,7 @@ export default {
 		
 		//获取用户信息
 		
-		_this.$http.post('http://api.75177.com/api/user/getaccountinfo', { userid: userinfo.userid}, {headers: {},emulateJSON: true}).then(
+		_this.$http.post('http://192.168.188.148:9527/api/user/getaccountinfo', { userid: userinfo.userid}, {headers: {},emulateJSON: true}).then(
 			function(response){
 				let { msg, code } = response.data;
 				if( code == "0"){
